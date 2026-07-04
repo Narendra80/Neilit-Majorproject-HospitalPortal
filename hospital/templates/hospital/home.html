@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to MedPortal Pro | Capstone Hospital Portal{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="hero-glow"></div>
+    <div class="container">
+        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3 fw-semibold border border-primary border-opacity-25">
+            <i class="bi bi-sparkles me-1"></i> Next-Gen Healthcare Management Capstone
+        </span>
+        <h1 class="display-3 fw-extrabold mb-4">
+            Advanced Care, <br>
+            <span style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Seamless Appointments.</span>
+        </h1>
+        <p class="lead text-secondary max-w-2xl mx-auto mb-5" style="max-width: 700px;">
+            Browse specialized doctors, check live availability, and book instant consultation slots with dynamic department filters and real-time appointment tracking.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'appointment_create' %}" class="btn btn-gradient btn-lg px-4 py-3">
+                <i class="bi bi-calendar-plus me-2"></i> Book Instant Appointment
+            </a>
+            <a href="{% url 'doctor_list' %}" class="btn btn-outline-primary btn-lg px-4 py-3 rounded-3 fw-semibold">
+                <i class="bi bi-search me-2"></i> Explore Specialists
+            </a>
+        </div>
+
+        <!-- Quick Stats Banner -->
+        <div class="row g-4 mt-5 pt-3">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <div class="fs-1 fw-bold text-primary mb-1">{{ total_doctors }}+</div>
+                    <div class="text-secondary fw-medium">Specialized Doctors</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <div class="fs-1 fw-bold text-success mb-1">4</div>
+                    <div class="text-secondary fw-medium">Medical Departments</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <div class="fs-1 fw-bold text-info mb-1">{{ total_appointments }}+</div>
+                    <div class="text-secondary fw-medium">Appointments Managed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Department Showcase -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Our Medical Departments</h2>
+                <p class="text-secondary mb-0">Filter doctors instantly across our specialized clinical units.</p>
+            </div>
+            <a href="{% url 'doctor_list' %}" class="text-primary text-decoration-none fw-semibold">View All Doctors <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+        <div class="row g-4">
+            {% for code, name in departments %}
+            <div class="col-md-6 col-lg-3">
+                <a href="{% url 'doctor_list' %}?dept={{ code }}" class="text-decoration-none">
+                    <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3 text-primary">
+                                {% if code == 'CARDIO' %}
+                                <i class="bi bi-heart-pulse fs-2"></i>
+                                {% elif code == 'PEDIA' %}
+                                <i class="bi bi-emoji-smile fs-2"></i>
+                                {% elif code == 'ORTHO' %}
+                                <i class="bi bi-person-walking fs-2"></i>
+                                {% else %}
+                                <i class="bi bi-activity fs-2"></i>
+                                {% endif %}
+                            </div>
+                            <h4 class="fw-bold mb-2">{{ name }}</h4>
+                            <p class="text-muted small mb-3">Comprehensive diagnostics and specialized medical treatments.</p>
+                        </div>
+                        <div class="d-flex align-items-center text-primary fw-semibold small">
+                            <span>Browse Unit</span>
+                            <i class="bi bi-chevron-right ms-1"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Doctors Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4 text-center">Top Medical Specialists</h2>
+        <div class="row g-4">
+            {% for doctor in featured_doctors %}
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill">{{ doctor.get_department_display }}</span>
+                            <span class="text-success fw-bold">${{ doctor.consultation_fee }}</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">Dr. {{ doctor.name }}</h5>
+                        <p class="text-secondary small mb-3">{{ doctor.specialization }}</p>
+                        <div class="small text-muted mb-2">
+                            <i class="bi bi-calendar-event me-1"></i> {{ doctor.available_days }}
+                        </div>
+                        <div class="small text-muted">
+                            <i class="bi bi-door-open me-1"></i> {{ doctor.room_number }}
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{% url 'appointment_create' %}?doctor_id={{ doctor.id }}" class="btn btn-outline-primary w-100 rounded-3 fw-semibold">
+                            Book Slot
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
